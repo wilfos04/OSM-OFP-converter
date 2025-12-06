@@ -1,5 +1,10 @@
 OFP Converter – README
 
+0. About the program and me
+This was made by WFO, I do not really know how to program, I made this in a few days learning from chatGPT.
+There is no guarantee this script will work, I barely know how python works, and am lucky to have gotten this script working
+If you are more knowledgeable about this than me I recommend you to make your own version or improve this one!
+
 
 
 1. Overview
@@ -7,11 +12,9 @@ OFP Converter – README
 This program converts a ForeFlight Navlog PDF into a filled-out OSM Aviation OFP (“Clean_OFP.pdf”) by extracting flight leg data and writing it into the correct fields.
 
 Input:
-
 Foreflight_OFP.pdf (ForeFlight Navlog)
 
 Output:
-
 Filled_OFP.pdf (completed flight plan)
 
 The process uses simple PDF text extraction + coordinate-based text drawing.
