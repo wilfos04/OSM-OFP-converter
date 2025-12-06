@@ -35,6 +35,7 @@ pypdf	Merge overlay canvas with template PDF
 
 
 3. Installation Instructions (Fresh Computer)
+
 Step 1 — Install Python
 
 Download and install Python from:

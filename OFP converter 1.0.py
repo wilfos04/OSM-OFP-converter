@@ -16,7 +16,7 @@ for w in words:
 """
 """
 
-with pdfplumber.open("Test.pdf") as pdf:
+with pdfplumber.open("Foreflight_OFP.pdf") as pdf:
     page = pdf.pages[0]
     for w in page.extract_words():
         print(repr(w["text"]), w["x0"], w["x1"])
