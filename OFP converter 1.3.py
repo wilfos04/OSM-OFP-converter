@@ -1,7 +1,8 @@
 import pdfplumber
 from reportlab.pdfgen import canvas
-from pypdf import PdfReader, PdfWriter
+from pypdf import PdfReader
 import io
+
 
 
 with pdfplumber.open("Foreflight_OFP.pdf") as pdf:
@@ -86,17 +87,19 @@ with pdfplumber.open("Test1.pdf") as pdf:
 'ENGK' 18.0 45.2064
 """
 
+
+
 #--------------------00000000000000--------------------------
 #This section finds the X axis coordinates for navigational data in the foreflight OFP
 
 for w in words:
     if w["text"] == "HDG" and w["top"] > 150:
-        mhx0 = w["x0"] - 3
-        mhx1 = w["x1"] + 3
+        mhx0 = w["x0"] - 1
+        mhx1 = w["x1"] + 1
         
     if w["text"] == "CRS" and w["top"] > 150:
-        mtx0 = w["x0"] - 3
-        mtx1 = w["x1"] + 3
+        mtx0 = w["x0"] - 1
+        mtx1 = w["x1"] + 1
         
     if w["text"] == "ALT" and w["top"] > 150:
         altx0 = w["x0"] - 7
@@ -130,7 +133,6 @@ for w in words:
         tottx0 = w["x0"] - 3
         tottx1 = w["x1"] + 3
     
-
 
 
         
@@ -167,7 +169,7 @@ for w in words:
             break
         used_legs.append(w["text"])
 
-bottom -= 20
+bottom -= 30
 
 
 a = 1
@@ -251,11 +253,10 @@ for w in words:
 mh_legs = []
 
 for w in words:
-    if mtx0 < w["x0"] < mtx1 and w["top"] > 220 and w["top"] < bottom:
+    if mhx0 < w["x0"] < mhx1 and w["top"] > 220 and w["top"] < bottom:
         mh_legs.append(w["text"])
         
-
-
+        
 
 wca_legs = []
 i = 0
@@ -312,8 +313,13 @@ blacklist = []
 
 print("Press enter to continue, or enter line numbers you want to delete in list format eg.: 5, 8")
 userinput = input()
-if userinput != '':
+
+while userinput != "":
     blacklist.append(int(userinput))
+    print("Added line", userinput, "to the blacklist")
+    userinput = input()
+
+
 
 b = 0
 while b < len(mt_legs) - 1:
@@ -386,14 +392,13 @@ waypoints = [x for x in waypoints if x not in badwaypoints]"""
 #This section draws all the data into the first page OFP
 
 
-x = 0
-dx = 30
-
-y = 335
-line_height = 19.2
+x = 227
+dx = 42
+line_height = 27.3
 
 packet = io.BytesIO()
-can = canvas.Canvas(packet, pagesize=(1000, 842))
+can = canvas.Canvas(packet, pagesize=(1200, 842))
+can.setFont("Helvetica", 17)
 
 """
 y = 344.2
@@ -403,94 +408,94 @@ for d in waypoints:
         break
     y -= line_height
 """
-y = 335
+y = 470
 for d in alt_legs:
-    can.drawRightString(160, y, d)
-    if y < 70:
+    can.drawRightString(x, y, d)
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in dir_legs:
-    can.drawRightString(220, y, d)
-    if y < 70:
+    can.drawRightString(x + 2*dx, y, d)
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in kts_legs:
-    can.drawRightString(250, y, str(d))
-    if y < 70:
+    can.drawRightString(x + 3*dx, y, str(d))
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in tas_legs:
-    can.drawRightString(280, y, d)
-    if y < 70:
+    can.drawRightString(x + 4*dx, y, d)
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in gs_legs:
-    can.drawRightString(308, y, d)
-    if y < 70:  
+    can.drawRightString(x + 5*dx, y, d)
+    if y < 100:  
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in mt_legs:
-    can.drawRightString(395, y, d)
-    if y < 70:
+    can.drawRightString(x + 8*dx, y, d)
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in wca_legs:
-    can.drawRightString(425, y, str(d))
-    if y < 70:
+    can.drawRightString(x + 9*dx, y, str(d))
+    if y < 100:
         break
     y -= line_height
     
-y = 335
+y = 470
 for d in mh_legs:
-    can.drawRightString(455, y, d)
-    if y < 70:
+    can.drawRightString(x + 10*dx, y, d)
+    if y < 100:
         break
     y -= line_height
     
-y = 335
+y = 470
 for d in int_legs:
-    can.drawRightString(480, y, str(d))
-    if y < 70:
+    can.drawRightString(x + 11*dx, y, str(d))
+    if y < 100:
         break
     y -= line_height
     
-y = 335
+y = 470
 for d in totd_legs:
-    can.drawRightString(510, y, str(d))
-    if y < 70:
+    can.drawRightString(x + 12*dx, y, str(d))
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in ete_legs:
-    can.drawRightString(542, y, d)
-    if y < 70:
+    can.drawRightString(x + 13*dx, y, d)
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in tot_legs:
-    can.drawRightString(572, y, d)
-    if y < 70:
+    can.drawRightString(x + 14*dx, y, d)
+    if y < 100:
         break
     y -= line_height
 
-y = 335
+y = 470
 for d in intf_legs:
-    can.drawRightString(722, y, str(d))
-    if y < 70:
+    can.drawRightString(x + 19*dx, y, str(d))
+    if y < 100:
         break
     y -= line_height
 
@@ -501,18 +506,30 @@ for d in intf_legs:
 can.save()
 packet.seek(0)
 
+
 overlay = PdfReader(packet)
 template = PdfReader("Clean_OFP.pdf")
 
-writer = PdfWriter()
-page = template.pages[0]
-page2 = template.pages[1]
-page.merge_page(overlay.pages[0])
-writer.add_page(page)
-writer.add_page(page2)
 
-with open("Filled_OFP.pdf", "wb") as f:
-    writer.write(f)
+
+# ---- NEW MERGE LOGIC (PIKEPDF) ----
+import pikepdf
+
+packet.seek(0)
+
+# Open the base OFP template (keeps all form fields intact)
+base_pdf = pikepdf.Pdf.open("Clean_OFP.pdf")
+
+# Open the overlay generated by reportlab
+overlay_pdf = pikepdf.Pdf.open(packet)
+
+# Apply overlay on page 0
+page = base_pdf.pages[0]
+page.add_overlay(overlay_pdf.pages[0])
+
+# Save output
+base_pdf.save("Filled_OFP.pdf")
+# -----------------------------------
 
 print("Completed, Filled_OFP has been updated")
     

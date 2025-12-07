@@ -19,9 +19,6 @@ Filled_OFP.pdf (completed flight plan)
 
 The process uses simple PDF text extraction + coordinate-based text drawing.
 
-You can not edit any of the fields in  Filled_OFP.pdf!! You can however edit Clean_OFP with the text fields you want, then run it through the script.
-Any changes done to Clean_OFP.pdf will carry over after running the script!
-
 The foreflight navigational part of the Foreflight OFP can not be more than one pages long!
 If the waypoints carry over to the second page, this scrip will not work (alternate exempted, those wont be added to the OSM OFP)!
 
@@ -69,6 +66,7 @@ Open Command Prompt and run:
 pip install pdfplumber
 pip install reportlab
 pip install pypdf
+pip install pikepdf
 
 
 
@@ -76,7 +74,7 @@ pip install pypdf
 
 Place the following files in one folder:
 
-OFP converter 1.0.py
+OFP converter 1.3.py
 Foreflight_OFP.pdf
 Clean_OFP.pdf
 
@@ -85,7 +83,7 @@ Foreflight_OFP.pdf = ForeFlight Navlog exported as PDF
 
 Clean_OFP.pdf = Empty OFP template
 
-OFP converter 1.0.py = The conversion script
+OFP converter 1.3.py = The conversion script
 
 
 
@@ -95,29 +93,29 @@ Open Command Prompt in the folder containing the script.
 
 Run:
 
-python "OFP converter 1.0.py"
+python "OFP converter 1.3.py"
 
 You will be prompted to either press enter, or to enter enter values into the "blacklist",
-What this does is it will delete the lines you enter. Fore example if you write 3, 6, 7. These lines will be deleted and nott appear in Filled_OFP.pdf
-This function is especially useful to delete waypoints you dont want in your OFP like Eivindstad, Uglebu or Ålefjær
+What this does is it will delete the lines you enter. For example if you write 3, 6, 7. These lines will be deleted and not appear in Filled_OFP.pdf
+This function is especially useful to delete waypoints you don't want in your OFP like Eivindstad, Uglebu or Ålefjær.
+Lines like TOC, TOD, Stay and so on should be deleted automatically
 
 
 
 6. Troubleshooting
 Problem: “ModuleNotFoundError”
 
-Open anaconda prompt and enter the following:
+Open cmd and enter the following:
 
-pip install pdfplumber reportlab pypdf
+pip install pdfplumber reportlab pypdf pikepdf
 
 
 
 8. Notes
 
-The program currently can not input waypoint names, I suggest you fill this data into Clean_OFP.pdf manually before running the script as this will carry over.
+The program currently can not input waypoint names, I suggest you fill this data into the OFP manually.
 
-Extraction of data is based specifically tuned to the columns in the foreflight navlog by looking within X values (laterally along the document)
-If ForeFlight changes its PDF layout, the program will no longer work and x-ranges will need updating.
+Extraction of data is automatically deteced only when the foreflight navlog is exported as pdf in the "Standard" format, Basic and International formats are not supported.
 
 
 
