@@ -22,6 +22,9 @@ The process uses simple PDF text extraction + coordinate-based text drawing.
 You can not edit any of the fields in  Filled_OFP.pdf!! You can however edit Clean_OFP with the text fields you want, then run it through the script.
 Any changes done to Clean_OFP.pdf will carry over after running the script!
 
+The foreflight navigational part of the Foreflight OFP can not be more than one pages long!
+If the waypoints carry over to the second page, this scrip will not work (alternate exempted, those wont be added to the OSM OFP)!
+
 
 
 2. Requirements

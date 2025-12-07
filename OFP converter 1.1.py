@@ -14,13 +14,122 @@ for w in words:
     if w["text"].isalnum():
         print(w)
 """
-"""
 
-with pdfplumber.open("Foreflight_OFP.pdf") as pdf:
+"""
+with pdfplumber.open("Test1.pdf") as pdf:
     page = pdf.pages[0]
     for w in page.extract_words():
         print(repr(w["text"]), w["x0"], w["x1"])
 """
+
+"""
+'MAG' 147.0117 165.67729999999997
+'WIND' 229.5984 250.9216
+'SPD' 299.3446 315.79260000000005
+'KT' 318.01660000000004 328.68219999999997
+'DIST' 341.1129 359.3369
+'NM' 361.5577 373.9993
+'FUEL' 392.5418 413.4298
+'G' 415.5106 421.7346
+'TIME' 504.6516 523.7604
+'WAYPOINT' 18.0 59.9392
+'AIRWAY' 97.70432 128.83232
+'HDG' 136.0426 153.8218
+'CRS' 158.3922 175.28340000000003
+'ALT' 187.0508 202.014
+'CMP' 212.4176 230.1952
+'DIR/SPD' 234.5317 266.97970000000004
+'ISA' 275.582 288.9164
+'TAS' 296.695 312.1046
+'GS' 317.8457 329.4041
+'LEG' 338.8398 355.2862
+'REM' 358.4926 376.2702
+'USED' 383.4805 405.7061
+'REM' 412.7676 430.5452
+'ACT' 447.8918 464.335
+'LEG' 482.9461 499.3925
+'REM' 506.9176 524.6952
+'ETE' 529.4645 545.0229
+'ACT' 565.6793 582.1225000000001
+'ENGK' 18.0 45.2064
+"""
+
+"""
+'MAG' 121.4742 140.13979999999998
+'WIND' 207.1234 228.44660000000002
+'SPD' 279.007 295.45500000000004
+'KT' 297.67900000000003 308.34459999999996
+'DIST' 322.3691 340.5931
+'NM' 342.8139 355.2555
+'FUEL' 374.9418 395.8298
+'G' 397.9106 404.1346
+'TIME' 496.0703 515.1791
+'WAYPOINT' 18.0 59.9392
+'AIRWAY' 70.59805 101.72605
+'HDG' 110.0801 127.8593
+'CRS' 133.3047 150.1959
+'ALT' 162.907 177.8702
+'CMP' 189.2426 207.02020000000002
+'DIR/SPD' 212.5066 244.9546
+'ISA' 254.3633 267.6977
+'TAS' 276.0012 291.4108
+'GS' 297.927 309.4854
+'LEG' 319.7023 336.14869999999996
+'REM' 340.1738 357.95140000000004
+'USED' 366.0867 388.3123
+'REM' 395.6988 413.4764
+'ACT' 434.3043 450.7475
+'LEG' 473.5149 489.9613
+'REM' 498.3988 516.1764000000001
+'ETE' 521.7957 537.3541
+'ACT' 562.1043 578.5475
+'ENGK' 18.0 45.2064
+"""
+
+#--------------------00000000000000--------------------------
+#This section finds the X axis coordinates for navigational data in the foreflight OFP
+
+for w in words:
+    if w["text"] == "HDG" and w["top"] > 150:
+        mhx0 = w["x0"] - 3
+        mhx1 = w["x1"] + 3
+        
+    if w["text"] == "CRS" and w["top"] > 150:
+        mtx0 = w["x0"] - 3
+        mtx1 = w["x1"] + 3
+        
+    if w["text"] == "ALT" and w["top"] > 150:
+        altx0 = w["x0"] - 7
+        altx1 = w["x1"] + 7
+        
+    if w["text"] == "DIR/SPD" and w["top"] > 150:
+        dsx0 = w["x0"] - 3
+        dsx1 = w["x1"] + 3
+        
+    if w["text"] == "TAS" and w["top"] > 150:
+        tasx0 = w["x0"] - 3
+        tasx1 = w["x1"] + 3
+        
+    if w["text"] == "GS" and w["top"] > 150:
+        gsx0 = w["x0"] - 3
+        gsx1 = w["x1"] + 3
+        
+    if w["text"] == "LEG" and w["top"] > 150 and w["x0"] < 390:
+        intdx0 = w["x0"] - 3
+        intdx1 = w["x1"] + 3
+        
+    if w["text"] == "USED" and w["top"] > 150:
+        usedx0 = w["x0"] - 3
+        usedx1 = w["x1"] + 3
+        
+    if w["text"] == "LEG" and w["top"] > 150 and w["x0"] > 390:
+        legtx0 = w["x0"] - 3
+        legtx1 = w["x1"] + 3
+        
+    if w["text"] == "ETE" and w["top"] > 150:
+        tottx0 = w["x0"] - 3
+        tottx1 = w["x1"] + 3
+    
 
 
 
@@ -46,10 +155,10 @@ for w in words:
 
 used_legs = [0]
 intf_legs = []
-bottom = 0
+bottom = 1000
 
 for w in words:
-    if 370 < w["x0"] < 395 and w["top"] > 220:
+    if usedx0 < w["x0"] < usedx1 and w["top"] > 220:
         if w["text"] == "-":
             bottom = w["top"]
             break
@@ -59,7 +168,6 @@ for w in words:
         used_legs.append(w["text"])
 
 bottom -= 20
-
 
 
 a = 1
@@ -78,21 +186,21 @@ while a < len(used_legs):
 ete_legs = []
 
 for w in words:
-    if 473 < w["x0"] < 496 and w["top"] > 220 and w["top"] < bottom:
+    if legtx0 < w["x0"] < legtx1 and w["top"] > 220 and w["top"] < bottom:
         ete_legs.append(w["text"])
 
 
 tot_legs = []
 
 for w in words:
-    if 520 < w["x0"] < 542 and w["top"] > 220 and w["top"] < bottom:
+    if tottx0 < w["x0"] < tottx1 and w["top"] > 220 and w["top"] < bottom:
         tot_legs.append(w["text"])
 
 
 alt_legs = []
 
 for w in words:
-    if 170 < w["x0"] < 195 and w["top"] > 220 and w["top"] < bottom:
+    if altx0 < w["x0"] < altx1 and w["top"] > 220 and w["top"] < bottom:
         alt_legs.append(w["text"])
 
 
@@ -104,10 +212,8 @@ dir_legs = []
 winds = []
 
 for w in words:
-    if 220 < w["x0"] < 260 and w["top"] > 220 and w["top"] < bottom:
+    if dsx0 < w["x0"] < dsx1 and w["top"] > 220 and w["top"] < bottom:
         winds.append(w["text"])
-
-
 
 for w in winds:
     if w == '-':
@@ -123,21 +229,21 @@ for w in winds:
 tas_legs = []
 
 for w in words:
-    if 284 < w["x0"] < 301 and w["top"] > 220 and w["top"] < bottom:
+    if tasx0 < w["x0"] < tasx1 and w["top"] > 220 and w["top"] < bottom:
         tas_legs.append(w["text"])
 
 
 gs_legs = []
 
 for w in words:
-    if 303 < w["x0"] < 320 and w["top"] > 220 and w["top"] < bottom:
+    if gsx0 < w["x0"] < gsx1 and w["top"] > 220 and w["top"] < bottom:
         gs_legs.append(w["text"])
 
 
 mt_legs = []
 
 for w in words:
-    if 149 < w["x0"] < 166 and w["top"] > 220 and w["top"] < bottom:
+    if mtx0 < w["x0"] < mtx1 and w["top"] > 220 and w["top"] < bottom:
         mt_legs.append(w["text"])
 
 
@@ -145,11 +251,11 @@ for w in words:
 mh_legs = []
 
 for w in words:
-    if 123 < w["x0"] < 140 and w["top"] > 220 and w["top"] < bottom:
+    if mtx0 < w["x0"] < mtx1 and w["top"] > 220 and w["top"] < bottom:
         mh_legs.append(w["text"])
         
 
-        
+
 
 wca_legs = []
 i = 0
@@ -170,12 +276,13 @@ while i < len(mt_legs):
 int_legs = []
 
 for w in words:
-    if 328 < w["x0"] < 341 and w["top"] > 220 and w["top"] < bottom:
+    if intdx0 < w["x0"] < intdx1 and w["top"] > 220 and w["top"] < bottom:
         if w["text"] == "-":
             int_legs.append("0")
         else: 
             int_legs.append(w["text"])
         
+
 
 totd_legs = []
 totd_legs.append(int_legs[0])
