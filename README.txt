@@ -1,9 +1,8 @@
 OFP Converter – README
 
 0. About the program and me
-This was made by WFO, I do not really know how to program, I made this in a few days learning from chatGPT.
-There is no guarantee this script will work, I barely know how python works, and am lucky to have gotten this script working
-If you are more knowledgeable about this than me I recommend you to make your own version or improve this one!
+This was made by WFO, I am not a programmer, and this was made with limited skill and chatGPT
+There is no guarantee this script will work as intended, ALWAYS CROSS CHECK BEFORE USING.
 
 
 
@@ -20,7 +19,7 @@ Filled_OFP.pdf (completed flight plan)
 The process uses simple PDF text extraction + coordinate-based text drawing.
 
 The foreflight navigational part of the Foreflight OFP can not be more than one pages long!
-If the waypoints carry over to the second page, this scrip will not work (alternate exempted, those wont be added to the OSM OFP)!
+If the list of waypoints carry over to the second page, this scrip will not work as intended!
 
 
 
@@ -95,7 +94,7 @@ Run:
 
 python "OFP converter 1.3.py"
 
-You will be prompted to either press enter, or to enter enter values into the "blacklist",
+You will be prompted to either press enter to continue, or enter a line number you want to delete.
 What this does is it will delete the lines you enter. For example if you write 3, 6, 7. These lines will be deleted and not appear in Filled_OFP.pdf
 This function is especially useful to delete waypoints you don't want in your OFP like Eivindstad, Uglebu or Ålefjær.
 Lines like TOC, TOD, Stay and so on should be deleted automatically
@@ -113,7 +112,7 @@ pip install pdfplumber reportlab pypdf pikepdf
 
 8. Notes
 
-The program currently can not input waypoint names, I suggest you fill this data into the OFP manually.
+The program currently can not input waypoint names, I suggest you fill this data into the OFP manually. Same with true track, variation and minimum fuel.
 
 Extraction of data is automatically deteced only when the foreflight navlog is exported as pdf in the "Standard" format, Basic and International formats are not supported.
 
