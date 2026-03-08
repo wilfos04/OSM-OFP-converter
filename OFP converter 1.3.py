@@ -4,7 +4,6 @@ from pypdf import PdfReader
 import io
 
 
-
 with pdfplumber.open("Foreflight_OFP.pdf") as pdf:
     page = pdf.pages[0]
     words = page.extract_words(use_text_flow=False)
@@ -311,8 +310,9 @@ while j < len(int_legs):
 blacklist = []
 
 
-print("Press enter to continue, or enter line numbers you want to delete in list format eg.: 5, 8")
+print("Press enter to continue, or enter a line number you want to delete")
 userinput = input()
+
 
 while userinput != "":
     blacklist.append(int(userinput))
@@ -371,9 +371,26 @@ for c in blacklist:
              
             totd_legs.pop(z)
             
+            
+            if z >= 1:
+               
+                ete1 = int(ete_legs[z][0])
+                ete2 = int(ete_legs[z][2]) 
+                ete3 = int(ete_legs[z][3])
+                
+                ete4 = int(ete_legs[z + 1][0])
+                ete5 = int(ete_legs[z + 1][2])
+                ete6 = int(ete_legs[z + 1][3])
+                
+                
+                ete_legs[z + 1] = str(ete1 + ete4) + ":" + str(ete2 + ete5) + str(ete3 + ete6)
+            
+            
             ete_legs.pop(z)
             
             tot_legs.pop(z)
+            
+            
             
             intf_legs[z + 1] = round(intf_legs[z + 1] + intf_legs[z], 2)
             intf_legs.pop(z)
@@ -384,9 +401,7 @@ int_legs.pop(len(int_legs)-1)
 intf_legs.pop(len(intf_legs)-1)
 
 
-"""
-badwaypoints = ["GKMJA", "CNGRE", "CNALE", "GKRYK", "CNRAM", "Stay"]
-waypoints = [x for x in waypoints if x not in badwaypoints]"""
+
 
 #--------------------00000000000000--------------------------
 #This section draws all the data into the first page OFP
@@ -409,11 +424,11 @@ for d in waypoints:
     y -= line_height
 """
 y = 470
-for d in alt_legs:
+"""for d in alt_legs:
     can.drawRightString(x, y, d)
     if y < 100:
         break
-    y -= line_height
+    y -= line_height"""
 
 y = 470
 for d in dir_legs:
