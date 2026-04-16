@@ -8,6 +8,8 @@ with pdfplumber.open("Foreflight_OFP.pdf") as pdf:
     page = pdf.pages[0]
     words = page.extract_words(use_text_flow=False)
 
+
+#Used to print a table of coordinates
 """
 #prints all words in first table
 for w in words:
@@ -22,6 +24,8 @@ with pdfplumber.open("Test1.pdf") as pdf:
         print(repr(w["text"]), w["x0"], w["x1"])
 """
 
+
+#Examples I used to find coordiantes of data points
 """
 'MAG' 147.0117 165.67729999999997
 'WIND' 229.5984 250.9216
@@ -145,14 +149,14 @@ for w in words:
 
 
 
-#autofilling waypoints doesnt work yet, which is why it is commented below
+#autofilling waypoints doesnt work yet
 
-"""waypoints = []
+waypoints = []
 
 for w in words:
-    if 17 < w["x0"] < 80 and w["top"] > 220 and w["text"].isalnum():
+    if 10 < w["x0"] < 80 and w["top"] > 220 and w["text"].isalnum():
         waypoints.append(w["text"])
-"""
+
 
 used_legs = [0]
 intf_legs = []
@@ -183,12 +187,12 @@ while a < len(used_legs):
         a += 1
 
 
-
+#legacy code
 ete_legs = []
-
+"""
 for w in words:
     if legtx0 < w["x0"] < legtx1 and w["top"] > 220 and w["top"] < bottom:
-        ete_legs.append(w["text"])
+        ete_legs.append(w["text"])"""
 
 
 tot_legs = []
@@ -305,7 +309,10 @@ while j < len(int_legs):
 #--------------------00000000000000--------------------------
 
 #this section deletes all TOC, TOD and extra unnaccesary spaces from the foreflight format
-#ADD NUMBERS TO THE BLACKLIST IF YOU WANT TO DELETE LINES EG.: [3, 8]
+
+#ADD NUMBERS TO THE BLACKLIST IF YOU WANT TO DELETE LINES
+#Example:
+#Type into the scratchpad when running eg. "7" then enter, "9" then enter to delete lines 7 and 9
     
 blacklist = []
 
@@ -316,24 +323,30 @@ userinput = input()
 
 while userinput != "":
     blacklist.append(int(userinput))
-    print("Added line", userinput, "to the blacklist")
+    print("Line", userinput, "will be skipped")
     userinput = input()
 
 
-
+#This code will delete a segment if the track is the same for to lines,
+#Or if the TAS = 0 or if the track is only a dash "-"
 b = 0
 while b < len(mt_legs) - 1:
     if mt_legs[b + 1] == mt_legs[b]:
         blacklist.append(b)
+        
+    elif tas_legs[b] == "0":
+        blacklist.append(b)
+        
     elif mt_legs[b] == "-":
         blacklist.append(b)
-    elif True:
-        pass
+        
+    
     b += 1
 
 
         
-
+#The blacklist is a list filled with the index numbers of the lines to be deleted
+#it is sorted and prepared, in the "for" loop they are deleted
 
 blacklist.sort()
 
@@ -348,7 +361,8 @@ for c in blacklist:
     while z < len(alt_legs):
         
         if z == c:
-            #waypoints.pop(z)
+            
+            waypoints.pop(z)
             
             alt_legs.pop(z)
             
@@ -371,8 +385,8 @@ for c in blacklist:
              
             totd_legs.pop(z)
             
-            
-            if z >= 1:
+            #legacy code
+            """if z >= 1:
                
                 ete1 = int(ete_legs[z][0])
                 ete2 = int(ete_legs[z][2]) 
@@ -386,7 +400,7 @@ for c in blacklist:
                 ete_legs[z + 1] = str(ete1 + ete4) + ":" + str(ete2 + ete5) + str(ete3 + ete6)
             
             
-            ete_legs.pop(z)
+            ete_legs.pop(z)"""
             
             tot_legs.pop(z)
             
@@ -399,6 +413,72 @@ for c in blacklist:
 
 int_legs.pop(len(int_legs)-1)
 intf_legs.pop(len(intf_legs)-1)
+
+
+
+
+#This section fills the ETE time, it is done by subtracting the previous total time
+
+r = 0
+while r < len(tot_legs):
+    
+    n0 = tot_legs[r][0]
+    n1 = tot_legs[r][1]
+    n2 = tot_legs[r][2]
+    n3 = tot_legs[r][3]
+    
+    #First ETE leg is the same as TOT time
+    if r == 0:
+        if n2 == "0":
+            ete_legs.append(n3)
+        else:
+            ete_legs.append(n2 + n3)
+        
+    #ETE is an easy subtraction if its still within the first hour (first number is 0)
+    elif n0 == "0":
+        nx = int(n2 + n3)
+        ny = nx - int(tot_legs[r-1][2] + tot_legs[r-1][3])
+        ete_legs.append(ny)
+        
+    #A bit more complex when you get into the second or third hour of flight
+    elif n0 != "0":
+        nx = int(n2 + n3)
+        ny = nx - int(tot_legs[r-1][2] + tot_legs[r-1][3])
+        
+        if ny >= 0:
+            
+            #in case ETE is more than one hour
+            if n0 != tot_legs[r-1][0]:
+                
+                if len(str(ny)) == 2:
+                    ete_legs.append("1:" + str(ny))
+                    
+                else:
+                    ete_legs.append("1:0" + str(ny))
+                
+            else:
+                ete_legs.append(ny)
+                
+        #If the current total time (only the minutes) minus the previous minutes returns
+        #negative minutes, this section adresses that and adds 60
+        elif ny < 0:
+            ny += 60
+            
+            #in case TOT jumps 2 hour marks eg. 0:xx -> 2:xx
+            if n0 != str(int(tot_legs[r-1][0]) + 1):
+                
+                if len(str(ny)) == 2:
+                    ete_legs.append("1:" + str(ny))
+                    
+                else:
+                    ete_legs.append("1:0" + str(ny))
+                
+            else:
+                ete_legs.append(ny)
+                
+        
+    r += 1
+    
 
 
 
@@ -495,7 +575,7 @@ for d in totd_legs:
 
 y = 470
 for d in ete_legs:
-    can.drawRightString(x + 13*dx, y, d)
+    can.drawRightString(x + 13*dx, y, str(d))
     if y < 100:
         break
     y -= line_height
@@ -546,7 +626,7 @@ page.add_overlay(overlay_pdf.pages[0])
 base_pdf.save("Filled_OFP.pdf")
 # -----------------------------------
 
-print("Completed, Filled_OFP has been updated")
+print("Completed, Filled_OFP.pdf has been updated")
     
 
 

@@ -1,8 +1,12 @@
 OFP Converter – README
 
 0. About the program and me
+The script is intended to be used for cross country flights. It converts all the data in a foreflight navlog to the OSM OFP. It does not fill out the second page of the OSM OFP per now.
+
 This was made by WFO, I am not a programmer, and this was made with limited skill and chatGPT
 There is no guarantee this script will work as intended, ALWAYS CROSS CHECK BEFORE USING.
+
+If you run into problems, please contact me with the foreflight navlog at wfo.student@flyosm.com
 
 
 
@@ -18,7 +22,8 @@ Filled_OFP.pdf (completed flight plan)
 
 The process uses simple PDF text extraction + coordinate-based text drawing.
 
-The foreflight navigational part of the Foreflight OFP can not be more than one pages long!
+The script only reads the first page of the Foreflight navlog.
+This means that the navigational part of the Foreflight navlog with waypoints (excluding alternate) can not be more than one pages long!
 If the list of waypoints carry over to the second page, this scrip will not work as intended!
 
 
@@ -73,7 +78,7 @@ pip install pikepdf
 
 Place the following files in one folder:
 
-OFP converter 1.3.py
+OFP converter 1.x.py
 Foreflight_OFP.pdf
 Clean_OFP.pdf
 
@@ -82,7 +87,9 @@ Foreflight_OFP.pdf = ForeFlight Navlog exported as PDF
 
 Clean_OFP.pdf = Empty OFP template
 
-OFP converter 1.3.py = The conversion script
+OFP converter 1.x.py = The conversion script
+
+Additionaly, I have also left Template_OFP which is a totally empty OFP.
 
 
 
@@ -92,7 +99,7 @@ Open Command Prompt in the folder containing the script.
 
 Run:
 
-python "OFP converter 1.3.py"
+python "OFP converter 1.x.py"
 
 You will be prompted to either press enter to continue, or enter a line number you want to delete.
 What this does is it will delete the lines you enter. For example if you write 3, 6, 7. These lines will be deleted and not appear in Filled_OFP.pdf
