@@ -269,6 +269,10 @@ while i < len(mt_legs):
         if int(mh_legs[i]) - int(mt_legs[i]) > 40:
             pass
             wca_legs.append((int(mh_legs[i]) - int(mt_legs[i])) - 360)
+        elif int(mh_legs[i]) - int(mt_legs[i]) < -40:
+            pass
+            wca_legs.append((int(mh_legs[i]) - int(mt_legs[i])) + 360)    
+            
         else:
             wca_legs.append(int(mh_legs[i]) - int(mt_legs[i]))
         i += 1
